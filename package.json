@@ -1,10 +1,12 @@
 {
   "name": "cards-game-wss",
   "version": "1.0.0",
+  "type": "module",
   "description": "## Setup",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon start"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/harivarshan-nitt/Cards-Game-WSS/issues"
   },
-  "homepage": "https://github.com/harivarshan-nitt/Cards-Game-WSS#readme"
+  "homepage": "https://github.com/harivarshan-nitt/Cards-Game-WSS#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.20",
+    "ws": "^8.12.0"
+  }
 }
