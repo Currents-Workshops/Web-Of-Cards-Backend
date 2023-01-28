@@ -69,3 +69,5 @@ wss.on('connection', (ws)=>{
         delete connections[ws.id]
     })
 })
+
+export{connections}
