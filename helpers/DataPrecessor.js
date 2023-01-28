@@ -1,9 +1,11 @@
 const FindById = (data, id)=>{
+    let ret = -1
     data.forEach(element => {
-        if(element.id == id)
-            return data.indexOf(element)
+        if(element.id == id){
+            ret = data[data.indexOf(element)]
+        }
     });
-    return -1
+    return ret
 }
 
 const Add = (data, element)=>{
