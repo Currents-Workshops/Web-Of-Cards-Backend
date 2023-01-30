@@ -1,6 +1,8 @@
 import { Add, FindById, Remove } from "../helpers/DataPrecessor.js"
 import GenerateRandomCodes from "../helpers/GenerateRandomCode.js"
 
+const CARDS_PER_HAND = 7
+
 class User{
     constructor(){
         this.id = GenerateRandomCodes(10)
@@ -26,13 +28,11 @@ class User{
     AddCards = (cards)=>{
         // if(this.InGame)
         cards.forEach(card => {
-            console.log(card)
             this.cards.push(card)
         });
     }
     DropCard = (card_index)=>{
         if(this.InGame && this.cards.length > card_index){
-            console.log(this.cards)
             return this.cards.splice(card_index, 1)[0]
         }
     }
@@ -60,8 +60,25 @@ class Game{
         this.center_deck = []
     }
     StartGame = ()=>{
-        //SHUFFLE CARDS AND DISTRIBUTE IT
-        //EACH PLAYER GETS 8 CARDS
+        this.started = true
+        var allCards = []
+        const numbers = ['A', '2', '3', '4', '5', '6', '7', '8', '9', 'J', 'Q', 'K']
+        const types = ['spade', 'club', 'heart', 'diamond']
+        types.forEach(type => {
+            numbers.forEach(number=>{
+                allCards.push(new Card(number, type))
+            })
+        })
+        this.users.forEach(user => {
+            let random_index = Math.floor(Math.random()*allCards.length)
+            let hand = []
+            for(let i=0; i<CARDS_PER_HAND; i++){
+                hand.push(allCards[random_index])
+                allCards.splice(random_index, 1)
+            }
+            this.UserTookCards(user, hand)            
+        })
+        this.cur_turn = Math.floor(Math.random()*this.users.length)
     }
     UserJoined = (user)=>{
         this.users.push(user)
@@ -74,10 +91,12 @@ class Game{
     UserDroppedCard = (user, card_index)=>{
         if(this.users[this.cur_turn] != user)
             return false
+        this.cur_turn++
+        if(this.cur_turn == this.users.length)
+            this.cur_turn = 0
         const cur_user = this.users[this.users.indexOf(user)]
         const card_dropped = cur_user.DropCard(card_index)
         const center_card = this.center_deck[this.center_deck.length - 1]
-        console.log(card_dropped)
         if(center_card && center_card.Equals(card_dropped)){
             this.center_deck.push(card_dropped)
             while(this.center_deck.length > 0){

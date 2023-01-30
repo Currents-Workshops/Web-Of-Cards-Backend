@@ -38,8 +38,9 @@ wss.on('connection', (ws)=>{
     if(Games.length == 0)
         cur_user.CreateNewGame()
     else
+    {
         cur_user.JoinGame(Games[0])
-        console.log(Games)
+    }
 
     //USE A SIMILAR FORMAT TO THIS TO SEND A RESPONSE TO THE CLIENT
     ws.send(JSON.stringify({
