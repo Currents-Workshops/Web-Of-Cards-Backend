@@ -1,7 +1,9 @@
-import {Users, User, Game, Games, Card} from "./models/Models.js"
+import {Users, User, Game, Games, Card, Connections} from "./models/Models.js"
 import {WebSocketServer} from "ws"
 import * as dotenv from "dotenv"
 import { Add, Remove } from "./helpers/DataPrecessor.js"
+
+import DropCard from "./api/DropCard.js"
 
 dotenv.config()
 
@@ -21,33 +23,23 @@ const HandleMessage = (ws, req)=>{
     eval(func)(ws, req)
 }
 
-var connections = {}
-
 
 const wss = new WebSocketServer({
     port: process.env.PORT
 })
 console.log("THE SERVER IS UP AND RUNNING ON PORT "+process.env.PORT)
 
-const a = new User()
-const b = new User()
-Add(Users, a)
-Add(Users, b)
-const g = new Game()
-Add(Games, g)
-a.JoinGame(g)
-b.JoinGame(g)
-
-g.UserTookCards(a, [new Card(7, "Spades")])
-
-console.log(g)
-
 
 wss.on('connection', (ws)=>{
     let cur_user = new User()
     ws.id = cur_user.id
-    connections[cur_user.id] = ws
+    Connections[cur_user.id] = ws
     Add(Users, cur_user)
+    if(Games.length == 0)
+        cur_user.CreateNewGame()
+    else
+        cur_user.JoinGame(Games[0])
+        console.log(Games)
 
     //USE A SIMILAR FORMAT TO THIS TO SEND A RESPONSE TO THE CLIENT
     ws.send(JSON.stringify({
@@ -57,7 +49,7 @@ wss.on('connection', (ws)=>{
             user_id: cur_user.id
         }
     }))
-    console.log("USER CONNECTED!", Users)
+    console.log("USER CONNECTED!")
     ws.on("message", async (message)=>{
         const req = await JSON.parse(message)
         HandleMessage(ws, req)
@@ -66,6 +58,6 @@ wss.on('connection', (ws)=>{
         
         Remove(Users, FindById(Users, ws.id))
 
-        delete connections[ws.id]
+        delete Connections[ws.id]
     })
 })
