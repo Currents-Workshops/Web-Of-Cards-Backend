@@ -3,7 +3,6 @@ import {WebSocketServer} from "ws"
 import * as dotenv from "dotenv"
 import { Add, Remove } from "./helpers/DataPrecessor.js"
 
-import DropCard from "./api/DropCard.js"
 
 dotenv.config()
 
@@ -62,5 +61,3 @@ wss.on('connection', (ws)=>{
         delete Connections[ws.id]
     })
 })
-
-export{connections}

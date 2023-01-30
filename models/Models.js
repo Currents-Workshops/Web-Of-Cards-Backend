@@ -2,6 +2,7 @@ import { Add, FindById, Remove } from "../helpers/DataPrecessor.js"
 import GenerateRandomCodes from "../helpers/GenerateRandomCode.js"
 
 const CARDS_PER_HAND = 7
+const MAX_PLAYER_COUNT = 4
 
 class User{
     constructor(){
@@ -44,7 +45,7 @@ class Card{
         this.type = type
     }
     Equals = (card)=>{
-        if(this.number == card.number && this.type == card.type)
+        if(this.number == card.number)
             return true
         return false
     }
@@ -58,6 +59,7 @@ class Game{
         this.users = [host]
         this.cur_turn = null
         this.center_deck = []
+        this.leaderboard = []
     }
     StartGame = ()=>{
         this.started = true
@@ -113,6 +115,15 @@ class Game{
     UserTookCards = (user, cards)=>{
         const cur_user = this.users[this.users.indexOf(user)]
         cur_user.AddCards(cards)
+    }
+    IsGameCompleted = () =>{
+        return this.users.length - this.leaderboard.length <= 1; 
+    }
+    GetLeaderBoard = ()=>{
+        return this.leaderboard;
+    }
+    AddLeaderBoardPlayer = (user)=>{
+        this.leaderboard = [user,...this.leaderboard]
     }
 }
 
