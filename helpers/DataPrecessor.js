@@ -1,3 +1,4 @@
+import { Games } from "../models/Models.js"
 const FindById = (data, id)=>{
     let ret = -1
     data.forEach(element => {
@@ -22,4 +23,11 @@ const Remove = (data, e)=>{
     return -1
 }
 
-export {FindById, Add, Remove}
+const SearchGame = (code) =>{
+    Games.forEach(element=>{
+        if(element.code == code ) return element
+    })
+    return null;
+}
+
+export {FindById, Add, Remove,SearchGame}
