@@ -117,6 +117,15 @@ class Game{
         cur_user.AddCards(cards)
     }
     IsGameCompleted = () =>{
+        if(this.users.length - this.leaderboard.length == 1)
+        {
+            this.users.forEach((user)=>{
+                if(!this.leaderboard.includes(user))
+                {
+                    this.AddLeaderBoardPlayer(user);
+                }
+            })
+        }
         return this.users.length - this.leaderboard.length <= 1; 
     }
     GetLeaderBoard = ()=>{
