@@ -54,7 +54,7 @@ class Game{
     constructor(host){
         this.id = GenerateRandomCodes(10)
         this.host = host
-        this.code = GenerateRandomCodes(6)
+        this.code = GenerateRandomCodes(1)
         this.started = false
         this.users = [host]
         this.cur_turn = null
@@ -83,9 +83,8 @@ class Game{
         this.cur_turn = Math.floor(Math.random()*this.users.length)
     }
     UserJoined = (user)=>{
+        user.InGame = this.id
         this.users.push(user)
-        if(this.users.length == 2)
-            this.StartGame()
     }
     UserLeft = (user)=>{
         delete this.users[this.users.indexOf(user)]

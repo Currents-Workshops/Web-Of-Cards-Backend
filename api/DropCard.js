@@ -1,4 +1,4 @@
-import { Broadcast } from "../helpers/Broadcast.js"
+import Broadcast from "../helpers/Broadcast.js"
 import { FindById } from "../helpers/DataPrecessor.js"
 import { LoseHandler } from "../helpers/LoseHandler.js"
 import { Connections, Games, Users } from "../models/Models.js"

@@ -1,4 +1,4 @@
-import { Broadcast } from "./Broadcast.js"
+import Broadcast from "./Broadcast.js"
 
 const LoseHandler = (user,game) => {
     if(user.cards.length == 0)

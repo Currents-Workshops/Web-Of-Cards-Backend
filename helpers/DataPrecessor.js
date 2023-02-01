@@ -1,11 +1,13 @@
 import { Games } from "../models/Models.js"
 const FindById = (data, id)=>{
-    let ret = -1
+    let ret = null
     data.forEach(element => {
+        console.log(element, id)
         if(element.id == id){
             ret = data[data.indexOf(element)]
         }
     });
+    console.log('/n/n/n/n/n/n')
     return ret
 }
 
@@ -24,10 +26,14 @@ const Remove = (data, e)=>{
 }
 
 const SearchGame = (code) =>{
+    var game = null
     Games.forEach(element=>{
-        if(element.code == code ) return element
+        if(element.code.toString() == code.toString() ) {   
+            game = element
+            return
+        }
     })
-    return null;
+    return game;
 }
 
 export {FindById, Add, Remove,SearchGame}

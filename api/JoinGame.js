@@ -1,10 +1,11 @@
 import { FindById } from "../helpers/DataPrecessor.js"
 import { Games, Users,Game } from "../models/Models.js"
 import { SearchGame }  from "../helpers/DataPrecessor.js"
+import Broadcast from "../helpers/Broadcast.js"
 
 const JoinGame = (ws, req)=>{
     const cur_user = FindById(Users, ws.id)
-    let game = SearchGame(req.game_code)
+    const game = SearchGame(req.data.game_code)
     if(game == null)
     {
         ws.send(JSON.stringify({
@@ -14,13 +15,18 @@ const JoinGame = (ws, req)=>{
             }
         }))   
     }
-    game.UserJoined(cur_user)
-    ws.send(JSON.stringify({
-        type: "joined_game",
-        data: {
-            game:game
+    else
+    {
+        console.log(cur_user)
+        game.UserJoined(cur_user)
+        const data = {
+            type: "joined_game",
+            data: {
+                game:game
+            }
         }
-    }))
+        Broadcast(game, data)
+    }
 }
 
 export default JoinGame
