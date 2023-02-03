@@ -2,12 +2,10 @@ import { Games } from "../models/Models.js"
 const FindById = (data, id)=>{
     let ret = null
     data.forEach(element => {
-        console.log(element, id)
         if(element.id == id){
             ret = data[data.indexOf(element)]
         }
     });
-    console.log('/n/n/n/n/n/n')
     return ret
 }
 

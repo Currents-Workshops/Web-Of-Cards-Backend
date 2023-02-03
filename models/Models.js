@@ -1,7 +1,8 @@
-import { Add, FindById, Remove } from "../helpers/DataPrecessor.js"
+import Broadcast from "../helpers/Broadcast.js"
+import { Add, FindById } from "../helpers/DataPrecessor.js"
 import GenerateRandomCodes from "../helpers/GenerateRandomCode.js"
 
-const CARDS_PER_HAND = 7
+const CARDS_PER_HAND = 10
 const MAX_PLAYER_COUNT = 4
 
 class User{
@@ -54,7 +55,7 @@ class Game{
     constructor(host){
         this.id = GenerateRandomCodes(10)
         this.host = host
-        this.code = GenerateRandomCodes(1)
+        this.code = GenerateRandomCodes(6)
         this.started = false
         this.users = [host]
         this.cur_turn = null
@@ -64,7 +65,7 @@ class Game{
     StartGame = ()=>{
         this.started = true
         var allCards = []
-        const numbers = ['A', '2', '3', '4', '5', '6', '7', '8', '9', 'J', 'Q', 'K']
+        const numbers = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
         const types = ['spade', 'club', 'heart', 'diamond']
         types.forEach(type => {
             numbers.forEach(number=>{
@@ -72,15 +73,22 @@ class Game{
             })
         })
         this.users.forEach(user => {
-            let random_index = Math.floor(Math.random()*allCards.length)
             let hand = []
             for(let i=0; i<CARDS_PER_HAND; i++){
+                let random_index = Math.floor(Math.random()*(allCards.length))
                 hand.push(allCards[random_index])
                 allCards.splice(random_index, 1)
             }
             this.UserTookCards(user, hand)            
         })
         this.cur_turn = Math.floor(Math.random()*this.users.length)
+        const res = {
+            type: "start_game",
+            data: {
+                game_data: this
+            }
+        }
+        Broadcast(this, res)
     }
     UserJoined = (user)=>{
         user.InGame = this.id
@@ -132,6 +140,16 @@ class Game{
     }
     AddLeaderBoardPlayer = (user)=>{
         this.leaderboard = [user,...this.leaderboard]
+    }
+    Restart = ()=>{
+        this.started = false
+        this.cur_turn = null
+        this.center_deck = []
+        this.leaderboard = []
+        this.users.forEach(user => {
+            user.cards = []
+        })
+        this.StartGame()
     }
 }
 

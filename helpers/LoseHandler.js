@@ -13,6 +13,7 @@ const LoseHandler = (user,game) => {
         game.AddLeaderBoardPlayer(user);
         if(game.IsGameCompleted())
         {
+            game.started = false
             var res = {
                 "type": "leaderboard" , 
                 "data": {

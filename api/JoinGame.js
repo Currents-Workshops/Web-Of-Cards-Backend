@@ -1,5 +1,5 @@
 import { FindById } from "../helpers/DataPrecessor.js"
-import { Games, Users,Game } from "../models/Models.js"
+import { Users } from "../models/Models.js"
 import { SearchGame }  from "../helpers/DataPrecessor.js"
 import Broadcast from "../helpers/Broadcast.js"
 
@@ -17,7 +17,6 @@ const JoinGame = (ws, req)=>{
     }
     else
     {
-        console.log(cur_user)
         game.UserJoined(cur_user)
         const data = {
             type: "joined_game",

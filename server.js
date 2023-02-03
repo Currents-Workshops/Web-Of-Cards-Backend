@@ -1,4 +1,4 @@
-import {Users, User, Game, Games, Card, Connections} from "./models/Models.js"
+import {Users, User, Connections} from "./models/Models.js"
 import {WebSocketServer} from "ws"
 import * as dotenv from "dotenv"
 import { Add, Remove, FindById } from "./helpers/DataPrecessor.js"
@@ -6,6 +6,7 @@ import CreateGame from "./api/CreateGame.js"
 import DropCard from "./api/DropCard.js"
 import JoinGame from "./api/JoinGame.js"
 import StartGame from "./api/StartGame.js"
+import Restart from "./api/Restart.js"
 
 
 dotenv.config()
@@ -28,7 +29,7 @@ const HandleMessage = (ws, req)=>{
 
 
 const wss = new WebSocketServer({
-    host: "192.168.197.142",
+    host: process.env.HOST,
     port: process.env.PORT
 })
 console.log("THE SERVER IS UP AND RUNNING ON PORT "+process.env.PORT)
