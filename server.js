@@ -56,8 +56,57 @@ wss.on('connection', (ws)=>{
     })
     ws.on('close', ()=>{
         
-        Remove(Users, FindById(Users, ws.id))
-
+        //disconnect user from socket
         delete Connections[ws.id]
+
+
+        //disconnect user from game
+        const cur_user = FindById(Users, ws.id)
+        const cur_game = FindById(Games, cur_user.InGame)
+        Remove(Users, cur_user)
+        if(cur_game != null)
+        {
+            cur_game.UserLeft(cur_user)   
+        }
+        if(cur_user == cur_game.host){
+        if(cur_game.users.length > 0)
+            {
+                cur_game.host = cur_game.users[0]
+                // cur_game.users[0].MakeHost()
+            
+            }
+            else
+            {
+                Remove(Games, cur_game)
+            }
+          
+        }
+            
+        
+        
+        // delete Connections[ws.id]
+
+
+
+
+
+        // Remove(Users, FindById(Users, ws.id))
+        // const cur_user = FindById(Users, ws.id)
+        // const cur_game = FindById(Games, cur_user.InGame)
+        // if(cur_game != null)
+        // {
+        //     cur_game.UserLeft(cur_user)   
+        // }
+        // if(cur_user == cur_game.host){
+            
+        // }
+
+    
+
+
+
+            
+
+
     })
 })
