@@ -89,7 +89,7 @@ class Game{
         const res = {
             type: "start_game",
             data: {
-                game_data: this
+                game: this
             }
         }
         Broadcast(this, res)
