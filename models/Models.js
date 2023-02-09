@@ -10,6 +10,10 @@ class User{
         this.id = GenerateRandomCodes(10)
         this.InGame = null
         this.cards = []
+        this.name = null;
+    }
+    SetName = (name) =>{
+        this.name = name
     }
     CreateNewGame = ()=>{
         const new_game = new Game(this)

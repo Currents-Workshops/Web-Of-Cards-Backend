@@ -5,6 +5,7 @@ import Broadcast from "../helpers/Broadcast.js"
 
 const JoinGame = (ws, req)=>{
     const cur_user = FindById(Users, ws.id)
+    cur_user.SetName(req.data.name)
     const game = SearchGame(req.data.game_code)
     if(game == null)
     {

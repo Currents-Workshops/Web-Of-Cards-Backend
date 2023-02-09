@@ -3,6 +3,7 @@ import { Games, Users,Game } from "../models/Models.js"
 
 const CreateGame = (ws, req)=>{
     const cur_user = FindById(Users, ws.id)
+    cur_user.SetName(req.data.name)
     let new_game = new Game(cur_user);
     cur_user.InGame =  new_game.id
     Games.push(new_game);
