@@ -7,6 +7,7 @@ import DropCard from "./api/DropCard.js"
 import JoinGame from "./api/JoinGame.js"
 import StartGame from "./api/StartGame.js"
 import Restart from "./api/Restart.js"
+import Disconnect from "./api/Disconnect.js"
 
 
 dotenv.config()

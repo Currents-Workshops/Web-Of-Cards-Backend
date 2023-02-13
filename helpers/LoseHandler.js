@@ -3,6 +3,7 @@ import Broadcast from "./Broadcast.js"
 const LoseHandler = (user,game) => {
     if(user.cards.length == 0)
     {
+        user.isLost = true
         var res = {
             "type": "lose_message" , 
             "data": {
