@@ -1,5 +1,5 @@
 import Broadcast from "../helpers/Broadcast.js"
-import { Add, FindById } from "../helpers/DataPrecessor.js"
+import { Add, FindById, Remove } from "../helpers/DataPrecessor.js"
 import GenerateRandomCodes from "../helpers/GenerateRandomCode.js"
 
 const CARDS_PER_HAND = 10
@@ -99,7 +99,20 @@ class Game{
         this.users.push(user)
     }
     UserLeft = (user)=>{
-        delete this.users[this.users.indexOf(user)]
+        if(user == this.host){
+            if(this.users.length > 1)
+            {
+                console.log("IS HOST")
+                this.host = this.users[0]
+            }
+            else
+            {
+                Remove(Games, this)
+            }          
+        }
+        this.users.splice(this.users.indexOf(user), 1)
+        if(this.cur_turn > this.users.length)
+            this.cur_turn = 0
     }
     UserDroppedCard = (user, card_index)=>{
         if(this.users[this.cur_turn] != user)

@@ -1,4 +1,4 @@
-import {Users, User, Connections} from "./models/Models.js"
+import {Users, User, Games, Connections, Game} from "./models/Models.js"
 import {WebSocketServer} from "ws"
 import * as dotenv from "dotenv"
 import { Add, Remove, FindById } from "./helpers/DataPrecessor.js"
@@ -67,21 +67,8 @@ wss.on('connection', (ws)=>{
         if(cur_game != null)
         {
             cur_game.UserLeft(cur_user)   
-        }
-        if(cur_user == cur_game.host){
-        if(cur_game.users.length > 0)
-            {
-                cur_game.host = cur_game.users[0]
-                // cur_game.users[0].MakeHost()
-            
-            }
-            else
-            {
-                Remove(Games, cur_game)
-            }
-          
-        }
-            
+            console.log(Games)
+        }  
         
         
         // delete Connections[ws.id]

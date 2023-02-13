@@ -16,7 +16,7 @@ const Add = (data, element)=>{
 const Remove = (data, e)=>{
     data.forEach(element => {
         if(element == e){
-            delete data[data.indexOf(e)]
+            data.splice(data.indexOf(e), 1)
             return data.indexOf(e)
         }
     });
