@@ -70,7 +70,7 @@ class Game{
         this.started = true
         var allCards = []
         const numbers = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
-        const types = ['spade', 'club', 'heart', 'diamond']
+        const types = ['spades', 'clubs', 'hearts', 'diams']
         types.forEach(type => {
             numbers.forEach(number=>{
                 allCards.push(new Card(number, type))
