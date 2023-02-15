@@ -7,21 +7,14 @@ import DropCard from "./api/DropCard.js"
 import JoinGame from "./api/JoinGame.js"
 import StartGame from "./api/StartGame.js"
 import Restart from "./api/Restart.js"
+import Disconnect from "./api/Disconnect.js"
+import LeaveGame from "./api/Leavegame.js"
+import Broadcast from "./helpers/Broadcast.js"
 
-
+//HELPS US USE THE .env FILE IN OUR CODE
 dotenv.config()
 
-/* 
-The request from the client should come in the following format
-{
-    type: "REQUEST_TYPE"  //(example: connection, make_match, etx)
-    data: {
-        //HAS ALL THE DATA ABOUT THE REQUEST (ex: client_id, match_id, etc)
-    }
-}
-*/
-
-//startgame - Startgame.js
+//HANDLES EVERY REQUEST 
 const HandleMessage = (ws, req)=>{
     const func = req.type.charAt(0).toUpperCase() + req.type.slice(1)
     eval(func)(ws, req)
@@ -56,7 +49,7 @@ wss.on('connection', (ws)=>{
     })
     ws.on('close', ()=>{
         
-        //disconnect user from socket
+        //REMOVES THE USER FROM CONNECTIONS DICTIONARY
         delete Connections[ws.id]
 
 
@@ -66,34 +59,30 @@ wss.on('connection', (ws)=>{
         Remove(Users, cur_user)
         if(cur_game != null)
         {
-            cur_game.UserLeft(cur_user)   
-            console.log(Games)
+            cur_game.UserLeft(cur_user)  
+            if(cur_game.IsGameCompleted())
+            {
+                cur_game.started = false
+                var res1 = {
+                    "type": "leaderboard" , 
+                    "data": {
+                        game: cur_game
+                    }
+                }
+                Broadcast(cur_game,res1);
+                cur_game.started = false;
+            }
+            const res = {
+                type: "left_game",
+            }
+            const data = {
+                type: "game_data",
+                data: {
+                    game: cur_game
+                }
+            }
+            ws.send(JSON.stringify(res))
+            Broadcast(cur_game, data)
         }  
-        
-        
-        // delete Connections[ws.id]
-
-
-
-
-
-        // Remove(Users, FindById(Users, ws.id))
-        // const cur_user = FindById(Users, ws.id)
-        // const cur_game = FindById(Games, cur_user.InGame)
-        // if(cur_game != null)
-        // {
-        //     cur_game.UserLeft(cur_user)   
-        // }
-        // if(cur_user == cur_game.host){
-            
-        // }
-
-    
-
-
-
-            
-
-
     })
 })

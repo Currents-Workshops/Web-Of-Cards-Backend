@@ -18,14 +18,26 @@ const JoinGame = (ws, req)=>{
     }
     else
     {
-        game.UserJoined(cur_user)
-        const data = {
-            type: "joined_game",
-            data: {
-                game:game
+        const joined = game.UserJoined(cur_user)
+        console.log(joined)
+        if(joined){
+            const data = {
+                type: "joined_game",
+                data: {
+                    game:game
+                }
             }
+            Broadcast(game, data)
         }
-        Broadcast(game, data)
+        else{
+            const data = {
+                type: "message",
+                data: {
+                    text: "Game full"
+                }
+            }
+            ws.send(JSON.stringify(data))
+        }
     }
 }
 

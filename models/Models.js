@@ -11,6 +11,7 @@ class User{
         this.InGame = null
         this.cards = []
         this.name = null;
+        this.isLost = false
     }
     SetName = (name) =>{
         this.name = name
@@ -59,7 +60,8 @@ class Game{
     constructor(host){
         this.id = GenerateRandomCodes(10)
         this.host = host
-        this.code = GenerateRandomCodes(6)
+        // this.code = GenerateRandomCodes(6)
+        this.code="T"
         this.started = false
         this.users = [host]
         this.cur_turn = null
@@ -67,6 +69,7 @@ class Game{
         this.leaderboard = []
     }
     StartGame = ()=>{
+        if(this.users.length <= 1) return false
         this.started = true
         var allCards = []
         const numbers = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
@@ -86,24 +89,21 @@ class Game{
             this.UserTookCards(user, hand)            
         })
         this.cur_turn = Math.floor(Math.random()*this.users.length)
-        const res = {
-            type: "start_game",
-            data: {
-                game: this
-            }
-        }
-        Broadcast(this, res)
+        return true
     }
     UserJoined = (user)=>{
+        console.log(this.users.length)
+        if(this.users.length >= 4) return false
         user.InGame = this.id
         this.users.push(user)
+        return true
     }
     UserLeft = (user)=>{
         if(user == this.host){
             if(this.users.length > 1)
             {
                 console.log("IS HOST")
-                this.host = this.users[0]
+                this.host = this.users[1]
             }
             else
             {
@@ -117,9 +117,6 @@ class Game{
     UserDroppedCard = (user, card_index)=>{
         if(this.users[this.cur_turn] != user)
             return false
-        this.cur_turn++
-        if(this.cur_turn == this.users.length)
-            this.cur_turn = 0
         const cur_user = this.users[this.users.indexOf(user)]
         const card_dropped = cur_user.DropCard(card_index)
         const center_card = this.center_deck[this.center_deck.length - 1]
@@ -131,9 +128,17 @@ class Game{
                 this.center_deck.splice(card_index, 1)
                 cur_user.cards.push(card)
             }
-            return true
         }
-        this.center_deck.push(card_dropped)
+        else
+            this.center_deck.push(card_dropped)
+        this.cur_turn++
+        if(this.cur_turn == this.users.length)
+            this.cur_turn = 0
+        while(this.users[this.cur_turn].isLost){
+            this.cur_turn++
+            if(this.cur_turn == this.users.length)
+                this.cur_turn = 0
+        }
         return true
     }
     UserTookCards = (user, cards)=>{
@@ -164,6 +169,7 @@ class Game{
         this.center_deck = []
         this.leaderboard = []
         this.users.forEach(user => {
+            user.isLost = false
             user.cards = []
         })
         this.StartGame()
