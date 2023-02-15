@@ -8,6 +8,13 @@ const Disconnect = (ws)=>{
     if(cur_game != null)
     {
         cur_game.UserLeft(cur_user)
+        const res = {
+            type: "user_left",
+            data: {
+                game_data: cur_game
+            }
+        }
+        Broadcast(cur_game, res)
     }
 }
 
