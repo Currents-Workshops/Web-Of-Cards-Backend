@@ -8,6 +8,7 @@ import JoinGame from "./api/JoinGame.js"
 import StartGame from "./api/StartGame.js"
 import Restart from "./api/Restart.js"
 import Disconnect from "./api/Disconnect.js"
+import LeaveGame from "./api/Leavegame.js"
 import Broadcast from "./helpers/Broadcast.js"
 
 //HELPS US USE THE .env FILE IN OUR CODE
@@ -58,15 +59,30 @@ wss.on('connection', (ws)=>{
         Remove(Users, cur_user)
         if(cur_game != null)
         {
-            cur_game.UserLeft(cur_user)   
-            console.log(Games)
+            cur_game.UserLeft(cur_user)  
+            if(cur_game.IsGameCompleted())
+            {
+                cur_game.started = false
+                var res1 = {
+                    "type": "leaderboard" , 
+                    "data": {
+                        game: cur_game
+                    }
+                }
+                Broadcast(cur_game,res1);
+                cur_game.started = false;
+            }
             const res = {
-                type: "user_left",
+                type: "left_game",
+            }
+            const data = {
+                type: "game_data",
                 data: {
-                    game_data: cur_game
+                    game: cur_game
                 }
             }
-            Broadcast(cur_game, res)
+            ws.send(JSON.stringify(res))
+            Broadcast(cur_game, data)
         }  
     })
 })

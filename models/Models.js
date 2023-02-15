@@ -69,7 +69,7 @@ class Game{
         this.leaderboard = []
     }
     StartGame = ()=>{
-        if(this.users.length <= 1) return
+        if(this.users.length <= 1) return false
         this.started = true
         var allCards = []
         const numbers = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
@@ -89,24 +89,21 @@ class Game{
             this.UserTookCards(user, hand)            
         })
         this.cur_turn = Math.floor(Math.random()*this.users.length)
-        const res = {
-            type: "start_game",
-            data: {
-                game: this
-            }
-        }
-        Broadcast(this, res)
+        return true
     }
     UserJoined = (user)=>{
+        console.log(this.users.length)
+        if(this.users.length >= 4) return false
         user.InGame = this.id
         this.users.push(user)
+        return true
     }
     UserLeft = (user)=>{
         if(user == this.host){
             if(this.users.length > 1)
             {
                 console.log("IS HOST")
-                this.host = this.users[0]
+                this.host = this.users[1]
             }
             else
             {
@@ -172,6 +169,7 @@ class Game{
         this.center_deck = []
         this.leaderboard = []
         this.users.forEach(user => {
+            user.isLost = false
             user.cards = []
         })
         this.StartGame()
