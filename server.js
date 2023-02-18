@@ -7,7 +7,6 @@ import DropCard from "./api/DropCard.js"
 import JoinGame from "./api/JoinGame.js"
 import StartGame from "./api/StartGame.js"
 import Restart from "./api/Restart.js"
-//import Disconnect from "./api/Disconnect.js"
 import LeaveGame from "./api/Leavegame.js"
 import Broadcast from "./helpers/Broadcast.js"
 
@@ -34,7 +33,7 @@ wss.on('connection', (ws)=>{
     Connections[cur_user.id] = ws
     Add(Users, cur_user)
 
-    //USE A SIMILAR FORMAT TO THIS TO SEND A RESPONSE TO THE CLIENT
+    //TELLING THE CLIENT THE CONNECTION IS SUCCESSFUL
     ws.send(JSON.stringify({
         type: "feedback",
         data: {
@@ -43,23 +42,27 @@ wss.on('connection', (ws)=>{
         }
     }))
     console.log("USER CONNECTED!")
+
+    //HANDLING MESSAGES
     ws.on("message", async (message)=>{
         const req = await JSON.parse(message)
         HandleMessage(ws, req)
     })
+
+    //HANDLING CLIENT DISCONNECTION
     ws.on('close', ()=>{
         
         //REMOVES THE USER FROM CONNECTIONS DICTIONARY
         delete Connections[ws.id]
 
-
-        //disconnect user from game
         const cur_user = FindById(Users, ws.id)
         const cur_game = FindById(Games, cur_user.InGame)
         Remove(Users, cur_user)
         if(cur_game != null)
         {
-            cur_game.UserLeft(cur_user)  
+            cur_game.UserLeft(cur_user)
+
+            //IF ONLY ONE USER IS LEFT IN THE GAME WE END THE GAME
             if(cur_game.IsGameCompleted())
             {
                 cur_game.started = false
@@ -72,6 +75,7 @@ wss.on('connection', (ws)=>{
                 Broadcast(cur_game,res1);
                 cur_game.started = false;
             }
+
             const res = {
                 type: "left_game",
             }

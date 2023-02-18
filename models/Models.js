@@ -3,8 +3,14 @@ import { Add, FindById, Remove } from "../helpers/DataPrecessor.js"
 import GenerateRandomCodes from "../helpers/GenerateRandomCode.js"
 
 const CARDS_PER_HAND = 10
-const MAX_PLAYER_COUNT = 4
 
+/* 
+    In actual applications we will have databases which store 
+    all the necessary data. For simplicity sake we will be storing all the data in classes 
+    and we will have an array which will mimic a table
+*/
+
+//STORES DATA ABOUT THE USER
 class User{
     constructor(){
         this.id = GenerateRandomCodes(10)
@@ -13,43 +19,52 @@ class User{
         this.name = null;
         this.isLost = false
     }
+    //SETS THE NAME OF THE user
     SetName = (name) =>{
         this.name = name
     }
+    //CREATES A NEW GAME
     CreateNewGame = ()=>{
         const new_game = new Game(this)
         this.InGame = new_game.id
         Add(Games, new_game)
     }
+    //MAKES THE USER JOIN A GAME
     JoinGame = (game)=>{
         if(this.InGame) return 0
         const cur_game = FindById(Games, game.id)
         cur_game.UserJoined(this)
         this.InGame = game.id
     }
+    //MAKES THE USER LEAVE A GAME
     LeaveGame = ()=>{
         const cur_game = FindById(Games, this.InGame)
         cur_game.UserLeft(this)
         this.InGame = null
     }
+    //ADDS A BUNCH OF CARDS TO THE USERS DECK
     AddCards = (cards)=>{
-        // if(this.InGame)
-        cards.forEach(card => {
-            this.cards.push(card)
-        });
+        if(this.InGame)
+            cards.forEach(card => {
+                this.cards.push(card)
+            });
     }
+    //DROPS THE CARD THE USER WANTS TO
     DropCard = (card_index)=>{
         if(this.InGame && this.cards.length > card_index){
             return this.cards.splice(card_index, 1)[0]
         }
     }
 }
+
+//STORES DATA ABOUT EACH CARD
 class Card{
     constructor(number, type){
         this.id = GenerateRandomCodes(10)
         this.number = number
         this.type = type
     }
+    
     Equals = (card)=>{
         if(this.number == card.number)
             return true
@@ -60,8 +75,7 @@ class Game{
     constructor(host){
         this.id = GenerateRandomCodes(10)
         this.host = host
-        // this.code = GenerateRandomCodes(6)
-        this.code="T"
+        this.code = GenerateRandomCodes(6)
         this.started = false
         this.users = [host]
         this.cur_turn = null
@@ -92,27 +106,22 @@ class Game{
         return true
     }
     UserJoined = (user)=>{
-        console.log(this.users.length)
-        if(this.users.length >= 4) return false
+        if(this.users.length >= 4 || this.started) return false
         user.InGame = this.id
         this.users.push(user)
         return true
     }
     UserLeft = (user)=>{
-        if(user == this.host){
-            if(this.users.length > 1)
-            {
-                console.log("IS HOST")
-                this.host = this.users[1]
-            }
-            else
-            {
-                Remove(Games, this)
-            }          
-        }
+        user.cards = []
         this.users.splice(this.users.indexOf(user), 1)
+        if(this.leaderboard.indexOf(user) != -1){
+            this.leaderboard.splice(this.leaderboard.indexOf(user), 1)
+        }
+        this.host = this.users[0]
+        if(this.users.length == 1) return false
         if(this.cur_turn > this.users.length)
             this.cur_turn = 0
+        return true
     }
     UserDroppedCard = (user, card_index)=>{
         if(this.users[this.cur_turn] != user)

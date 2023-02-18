@@ -1,3 +1,4 @@
+//GENERATES A RANDOM CODE
 const GenerateRandomCodes = (size)=>{
     const ALLOWED = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
     var temp = ""
