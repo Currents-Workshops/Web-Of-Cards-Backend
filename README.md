@@ -1,4 +1,4 @@
-# Cards-Game-WSS
+# Web Of Cards - Backend
 
 ## Setup
 
