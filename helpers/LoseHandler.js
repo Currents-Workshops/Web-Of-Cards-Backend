@@ -9,7 +9,7 @@ const LoseHandler = (user,game) => {
         var res = {
             "type": "lose_message" , 
             "data": {
-                "player-id":user.id
+                game: game
             }
         }
         Broadcast(game,res);

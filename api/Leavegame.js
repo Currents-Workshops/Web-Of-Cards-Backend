@@ -23,8 +23,7 @@ const LeaveGame = (ws)=>{
             Broadcast(cur_game, data)
         }
         else{
-            cur_game.AddLeaderBoardPlayer(cur_user);
-            console.log(cur_game.IsGameCompleted())
+            cur_game.AddLeaderBoardPlayer(cur_user)
             if(cur_game.IsGameCompleted())
             {
                 cur_game.started = false

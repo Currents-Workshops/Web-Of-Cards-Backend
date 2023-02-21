@@ -41,7 +41,6 @@ wss.on('connection', (ws)=>{
             user_id: cur_user.id
         }
     }))
-    console.log("USER CONNECTED!")
 
     //HANDLING MESSAGES
     ws.on("message", async (message)=>{
